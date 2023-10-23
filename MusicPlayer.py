@@ -9,6 +9,7 @@ class MusicPlayer:
     def __init__(self, window):
         self.window = window
         self.is_playing = False
+        self.is_paused = False
         self.queue = []
         self.current_index = 0
         self.folder_path = ""
@@ -24,7 +25,7 @@ class MusicPlayer:
         if not self.queue:
             return
 
-        if self.is_playing:
+        if self.is_paused:
             self.mixer.music.unpause()
         else:
             self.mixer.music.load(self.queue[self.current_index])
@@ -41,14 +42,16 @@ class MusicPlayer:
 
     def pause(self):
         pygame.mixer.music.pause()
-        self.is_playing = False
+        self.is_paused = True
 
     def next_track(self):
+        self.stop()
         if self.queue:
             self.current_index = (self.current_index + 1) % len(self.queue)
             self.play()
 
     def previous_track(self):
+        self.stop()
         if self.queue:
             self.current_index = (self.current_index - 1) % len(self.queue)
             self.play()

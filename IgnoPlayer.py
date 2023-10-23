@@ -22,7 +22,7 @@ class Window:
         }
 
     def update_progress_bar(self):
-        if not self.player.is_playing and self.player.current_time < self.player.song_duration:
+        if not self.player.is_playing and not self.player.is_paused and self.player.current_time < self.player.song_duration:
             self.Buttons['progress_bar']['value'] = self.player.current_time
             self.player.current_time += 1
             self.window.after(500, self.update_progress_bar)
