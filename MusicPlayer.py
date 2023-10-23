@@ -8,12 +8,14 @@ from tkinter import filedialog
 class MusicPlayer:
     def __init__(self, window):
         self.window = window
+        self.is_playing = False
         self.queue = []
         self.current_index = 0
         self.folder_path = ""
-        self.paused = False
         self.mixer = pygame.mixer
         self.listbox = None
+        self.song_duration = None
+        self.current_time = 0
 
         if not self.mixer.get_init():
             self.mixer.init()
@@ -22,34 +24,34 @@ class MusicPlayer:
         if not self.queue:
             return
 
-        if self.paused:
+        if self.is_playing:
             self.mixer.music.unpause()
-            self.paused = False
         else:
             self.mixer.music.load(self.queue[self.current_index])
             self.mixer.music.play()
+            self.is_playing = True
+            self.song_duration = self.mixer.Sound(self.queue[self.current_index]).get_length()
+            self.current_time = 0
+        self.is_playing = True
 
     def stop(self):
         self.mixer.music.stop()
-        self.paused = False
+        self.is_playing = False
+        self.current_time = 0
 
     def pause(self):
         pygame.mixer.music.pause()
-        self.paused = True
+        self.is_playing = False
 
     def next_track(self):
         if self.queue:
             self.current_index = (self.current_index + 1) % len(self.queue)
             self.play()
-        else:
-            self.paused = False
 
     def previous_track(self):
         if self.queue:
             self.current_index = (self.current_index - 1) % len(self.queue)
             self.play()
-        else:
-            self.paused = False
 
     def select_folder(self):
         self.folder_path = filedialog.askdirectory()
